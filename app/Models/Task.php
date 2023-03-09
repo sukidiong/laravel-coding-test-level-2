@@ -9,6 +9,11 @@ class Task extends Model
 {
     use HasFactory;
 
+    const NOT_STARTED = 'NOT_STARTED';
+    const IN_PROGRESS = 'IN_PROGRESS';
+    const READY_FOR_TEST = 'READY_FOR_TEST';
+    const COMPLETED = 'COMPLETED';
+
     /**
      * The attributes that are mass assignable.
      *
