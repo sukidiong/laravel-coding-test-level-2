@@ -78,10 +78,11 @@ class TaskController extends Controller
             'title' => $request->title,
             'project_id' => $request->project_id,
             'user_id' => $request->user_id,
-            'status'=>self::NOT_STARTED
+            'status'=>Task::NOT_STARTED
         ]);
         return response()->json([
             "success" => true,
+            'msg' => 'Task Created Successfully',
             "data" => $tasks
         ], 200);  
     }

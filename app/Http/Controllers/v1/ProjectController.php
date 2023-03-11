@@ -67,6 +67,7 @@ class ProjectController extends Controller
 
         return response()->json([
             "success" => true,
+            'msg' => 'Project Created Successfully',
             "data" => $projects
         ], 200);
     }
