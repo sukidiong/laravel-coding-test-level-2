@@ -34,6 +34,23 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
+        $this->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'msg' => 'User not authenticated'
+                ], 401);
+            }
+        });
+        $this->renderable(function (\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'msg' => 'User does not have permission'
+                ], 401);
+            }
+        });
+
         $this->reportable(function (Throwable $e) {
             //
         });
