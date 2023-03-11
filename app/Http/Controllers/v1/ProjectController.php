@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
@@ -23,9 +24,33 @@ class ProjectController extends Controller
         }else{
             $projects = Project::all();
         }
+
+        // Pagination
+        // q -> search keyword, will search for name
+        // pageIndex -> the index of the page to shown, default 0
+        // pageSize -> how many items to return, default 3
+        // sortBy -> attribute to sort, default name
+        // sortDirection -> direction of the sort, default ASC
+        $offset = !empty($request->get('pageIndex'))?$request->get('pageIndex'):0;
+        $limit = !empty($request->get('pageSize'))?$request->get('pageSize'):3;
+        if(!empty($request->get('q'))){
+            $search = $request->get('q');
+            $projects = $projects->filter(function ($value, $key) use ($search) {
+                return false !== stripos($value->name, $search);
+            });
+        }
+        
+        $sortBy = !empty($request->get('sortBy'))?$request->get('sortBy'):'name';
+        $sortDirection = !empty($request->get('sortDirection'))?strtolower($request->get('sortDirection')):'asc';
+        $projects = $projects->sortBy([[$sortBy, $sortDirection]]);
+        $page = $projects->forPage($offset+1,$limit)->values();
+
         return response()->json([
             "success" => true,
-            "data" => $projects
+            "total"=> $projects->count(),
+            "per_page"=> $limit,
+            "current_page"=> $offset+1,
+            "data" => $page
         ], 200);
     }
 
