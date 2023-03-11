@@ -191,7 +191,7 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) //DELETE
+    public function destroy(Request $request, $id) //DELETE
     {
         if(!$request->user()->tokenCan('role:product_owner')){
             throw new AccessDeniedHttpException($request);
